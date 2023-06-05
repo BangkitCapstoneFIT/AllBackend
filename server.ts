@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import { nanoid } from 'nanoid';
 import * as admin from 'firebase-admin';
+import 'dotenv/config'
 
 const serviceAccount = require('./firebase.json');
 
