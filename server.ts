@@ -12,23 +12,35 @@ admin.initializeApp({
 const db = admin.firestore();
 const app = express();
 const usersRef = db.collection('userLogin');
-const PORT = process.env.PORT;
+const PORT = 3000;
 
 app.use(bodyParser.json());
 app.use(cors());
 
-// Define your routes here
+app.post('/register', async (req, res) => {
+  try {
+    // Extract the required data from the request body
+    const { email, username, password, phoneNumber } = req.body;
+
+    // Create a new user object
+    const newUser = {
+      email,
+      username,
+      password,
+      phoneNumber,
+    };
+
+    // Store the user data in Firebase Firestore
+    await usersRef.add(newUser);
+
+    // Return a response indicating success
+    res.json({ message: 'User registered successfully' });
+  } catch (error) {
+    // Return a response indicating failure
+    res.status(500).json({ message: 'Failed to register user' });
+  }
+});
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
-  
-app.post('/register', (req, res) => {
-  // Extract the required data from the request body
-  const { email, username, password, phoneNumber } = req.body;
-
-  // Here, you can implement the logic to store the user data in Firebase Firestore
-
-  // Return a response indicating success or failure
-  res.json({ message: 'User registered successfully' });
+  console.log(`Server is running on port ${PORT}`);
 });
