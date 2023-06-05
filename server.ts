@@ -13,7 +13,7 @@ admin.initializeApp({
 const db = admin.firestore();
 const app = express();
 const usersRef = db.collection("databaseUser");
-const PORT = 3000;
+const PORT = process.env.PORT;
 
 usersRef.get().then((querySnapshot) => {
   querySnapshot.forEach((document) => {
