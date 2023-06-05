@@ -12,7 +12,7 @@ admin.initializeApp({
 const db = admin.firestore();
 const app = express();
 const usersRef = db.collection('userLogin');
-const PORT = 8080;
+const PORT = 3000;
 
 app.use(express.json());
 app.use(bodyParser.json());
