@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import { nanoid } from 'nanoid';
 import * as admin from 'firebase-admin';
 
 const serviceAccount = require('./firebase.json');
@@ -11,8 +12,14 @@ admin.initializeApp({
 
 const db = admin.firestore();
 const app = express();
-const usersRef = db.collection('userLogin');
+const usersRef = db.collection("databaseUser");
 const PORT = 3000;
+
+usersRef.get().then((querySnapshot) => {
+  querySnapshot.forEach((document) => {
+    console.log(document.data());
+    })
+})
 
 app.use(express.json());
 app.use(bodyParser.json());
@@ -23,8 +30,12 @@ app.post('/register', async (req, res) => {
     // Extract the required data from the request body
     const { email, username, password, phoneNumber } = req.body;
 
-    // Create a new user object
+    // Generate a unique ID using nanoid
+    const id = nanoid();
+
+    // Create a new user object with the generated ID
     const newUser = {
+      id,
       email,
       username,
       password,
@@ -32,7 +43,7 @@ app.post('/register', async (req, res) => {
     };
 
     // Store the user data in Firebase Firestore
-    await usersRef.add(newUser);
+    await usersRef.doc(id).set(newUser);
 
     // Return a response indicating success
     res.json({ message: 'User registered successfully' });
