@@ -1,10 +1,10 @@
-# Use the official Node.js v14 image as the base image
-FROM node:14
+# Base image
+FROM node:14-alpine
 
-# Set the working directory inside the container
+# Set the working directory
 WORKDIR /app
 
-# Copy the package.json and package-lock.json files to the working directory
+# Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
 # Install dependencies
@@ -13,11 +13,8 @@ RUN npm install
 # Copy the rest of the application code to the working directory
 COPY . .
 
-# Build the TypeScript code
-RUN npm run build
+# Expose the port your application is running on (assuming it's port 3000)
+EXPOSE 8080
 
-# Expose the port on which the application will run
-EXPOSE 80
-
-# Run the application
-CMD [ "npm", "start" ]
+# Start the application
+CMD ["npm", "start"]
