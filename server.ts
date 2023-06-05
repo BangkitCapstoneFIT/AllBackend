@@ -12,8 +12,9 @@ admin.initializeApp({
 const db = admin.firestore();
 const app = express();
 const usersRef = db.collection('userLogin');
-const PORT = 3000;
+const PORT = process.env.PORT;
 
+app.use(express.json());
 app.use(bodyParser.json());
 app.use(cors());
 
