@@ -54,6 +54,26 @@ app.post('/register', async (req, res) => {
   }
 });
 
+// Endpoint to get data from Firestore
+app.get('/data', (req, res) => {
+  const collectionRef = db.collection('databaseDataRaw');
+
+  collectionRef
+    .get()
+    .then((snapshot) => {
+      const data = [];
+      snapshot.forEach((doc) => {
+        const { target, texts } = doc.data();
+        data.push({ target, texts });
+      });
+      res.json(data);
+    })
+    .catch((error) => {
+      console.error('Error getting data from Firestore:', error);
+      res.status(500).send('Internal Server Error');
+    });
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
