@@ -16,19 +16,15 @@ const app = express();
 const usersRef = db.collection("databaseUser");
 const PORT = process.env.PORT;
 
-usersRef.get().then((querySnapshot) => {
-  querySnapshot.forEach((document) => {
-    console.log(document.data());
-  });
-});
-
 app.use(express.json());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors());
 
 app.post("/register", async (req, res) => {
   try {
     // Extract the required data from the request body
+    console.log(req);
     const { email, username, password, phoneNumber } = req.body;
 
     // Check if all required fields are present
