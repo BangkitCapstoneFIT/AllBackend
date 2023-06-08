@@ -5,7 +5,7 @@ import * as admin from "firebase-admin";
 import "dotenv/config";
 import routes from "./route";
 
-const serviceAccount = require("../firebase.json");
+const serviceAccount = require("./firebase.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),

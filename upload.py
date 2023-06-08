@@ -4,7 +4,7 @@ from firebase_admin import firestore
 import json
 
 # Initialize Firebase Admin SDK
-cred = credentials.Certificate("./firebase.json")  # Replace with your service account key path
+cred = credentials.Certificate("./src/firebase.json")  # Replace with your service account key path
 firebase_admin.initialize_app(cred)
 
 # Create a Firestore client
