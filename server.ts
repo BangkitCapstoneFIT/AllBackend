@@ -80,6 +80,57 @@ app.post("/register", async (req, res) => {
   }
 });
 
+app.post("/login", async (req, res) => {
+  try {
+    // Extract the required data from the request body
+    const { usernameOrEmail, password } = req.body;
+
+    // Check if all required fields are present
+    if (!usernameOrEmail) {
+      return res.status(400).json({ message: "Username or email is required" });
+    }
+
+    if (!password) {
+      return res.status(400).json({ message: "Password is required" });
+    }
+
+    // Find a user with the provided username or email
+    let snapshot = await usersRef
+      .where("username", "==", usernameOrEmail)
+      .limit(1)
+      .get();
+
+    // If no user is found with the username, try finding by email
+    if (snapshot.empty) {
+      const snapshotByEmail = await usersRef
+        .where("email", "==", usernameOrEmail)
+        .limit(1)
+        .get();
+
+      if (snapshotByEmail.empty) {
+        return res.status(400).json({ message: "Invalid credentials" });
+      }
+
+      // Use the user found by email
+      snapshot = snapshotByEmail;
+    }
+
+    // Get the user data from the snapshot
+    const user = snapshot.docs[0].data();
+
+    // Check if the provided password matches the user's password
+    if (user.password !== password) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    // Return a response indicating successful login
+    res.json({ message: "Login successful", user });
+  } catch (error) {
+    // Return a response indicating failure
+    res.status(500).json({ message: "Failed to login" });
+  }
+});
+
 // Endpoint to get data from Firestore
 app.get("/data", (req, res) => {
   const collectionRef = db.collection("databaseDataRaw");
