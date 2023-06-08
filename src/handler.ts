@@ -1,30 +1,14 @@
-import express from "express";
-import bodyParser from "body-parser";
-import cors from "cors";
+import { Request, Response } from "express";
 import { nanoid } from "nanoid";
 import * as admin from "firebase-admin";
-import "dotenv/config";
-
-const serviceAccount = require("./firebase.json");
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
 
 const db = admin.firestore();
-const app = express();
 const usersRef = db.collection("databaseUser");
-const PORT = process.env.PORT;
 
-app.use(express.json());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(cors());
-
-app.post("/register", async (req, res) => {
+export const registerHandler = async (req: Request, res: Response) => {
   try {
     // Extract the required data from the request body
-    console.log(req);
+    console.log(req.body);
     const { email, username, password, phoneNumber } = req.body;
 
     // Check if all required fields are present
@@ -78,10 +62,9 @@ app.post("/register", async (req, res) => {
     // Return a response indicating failure
     res.status(500).json({ message: "Failed to register user" });
   }
-});
+};
 
-// Login endpoint
-app.post("/login", async (req, res) => {
+export const loginHandler = async (req: Request, res: Response) => {
   try {
     // Extract the required data from the request body
     const { usernameOrEmail, password } = req.body;
@@ -130,11 +113,9 @@ app.post("/login", async (req, res) => {
     // Return a response indicating failure
     res.status(500).json({ message: "Failed to login" });
   }
-});
+};
 
-
-// Endpoint to get data from Firestore
-app.get("/data", (req, res) => {
+export const getDataHandler = (req: Request, res: Response) => {
   const collectionRef = db.collection("databaseDataRaw");
 
   collectionRef
@@ -151,8 +132,4 @@ app.get("/data", (req, res) => {
       console.error("Error getting data from Firestore:", error);
       res.status(500).send("Internal Server Error");
     });
-});
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+};
