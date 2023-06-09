@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import { nanoid } from "nanoid";
 import * as admin from "firebase-admin";
+import jwt from "jsonwebtoken";
 import "dotenv/config";
 
 const serviceAccount = require("./firebase.json");
@@ -15,10 +16,11 @@ const db = admin.firestore();
 const app = express();
 const usersRef = db.collection("databaseUser");
 const PORT = process.env.PORT;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 app.use(express.json());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 app.post("/register", async (req, res) => {
@@ -80,8 +82,9 @@ app.post("/register", async (req, res) => {
   }
 });
 
+
 // Login endpoint
-app.post("/login", async (req, res) => {
+app.post("/login", bodyParser.json(), async (req, res) => {
   try {
     // Extract the required data from the request body
     const { usernameOrEmail, password } = req.body;
@@ -124,14 +127,23 @@ app.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    // Return a response indicating successful login
-    res.json({ message: "Login successful", user });
+    // Generate a JWT token with the user ID as the payload
+    const token = jwt.sign({ userId: user.id }, JWT_SECRET);
+
+    // Return a response with the desired output format
+    res.json({
+      message: "Login successful",
+      user: {
+        id: user.id,
+        username: user.username,
+        token: token,
+      },
+    });
   } catch (error) {
     // Return a response indicating failure
     res.status(500).json({ message: "Failed to login" });
   }
 });
-
 
 // Endpoint to get data from Firestore
 app.get("/data", (req, res) => {
