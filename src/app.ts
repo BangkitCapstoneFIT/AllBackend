@@ -1,15 +1,10 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import * as admin from "firebase-admin";
-import "dotenv/config";
-import routes from "./route";
-
-const serviceAccount = require("../firebaseUser/firebase.json");
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
+import 'dotenv/config'
+import userRoutes from "./routes/userRoutes";
+import { getData } from "./controllers/dataController";
+import './config/firebase'
 
 const app = express();
 const PORT = process.env.PORT;
@@ -19,7 +14,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
-app.use("/", routes);
+app.use("/users", userRoutes);
+
+app.get("/data", getData);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
