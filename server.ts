@@ -84,7 +84,7 @@ app.post("/register", async (req, res) => {
 
 
 // Login endpoint
-app.post("/login", bodyParser.json(), async (req, res) => {
+app.post("/login", async (req, res) => {
   try {
     // Extract the required data from the request body
     const { usernameOrEmail, password } = req.body;
@@ -130,15 +130,8 @@ app.post("/login", bodyParser.json(), async (req, res) => {
     // Generate a JWT token with the user ID as the payload
     const token = jwt.sign({ userId: user.id }, JWT_SECRET);
 
-    // Return a response with the desired output format
-    res.json({
-      message: "Login successful",
-      user: {
-        id: user.id,
-        username: user.username,
-        token: token,
-      },
-    });
+    // Return a response with the JWT token and user data
+    res.json({ message: "Login successful", token, user });
   } catch (error) {
     // Return a response indicating failure
     res.status(500).json({ message: "Failed to login" });
