@@ -131,7 +131,14 @@ app.post("/login", async (req, res) => {
     const token = jwt.sign({ userId: user.id }, JWT_SECRET);
 
     // Return a response with the JWT token and user data
-    res.json({ message: "Login successful", token, user });
+    res.json({
+      message: "Login successful",
+      user: {
+        id: user.id,
+        username: user.username,
+        token: token
+      }
+    });
   } catch (error) {
     // Return a response indicating failure
     res.status(500).json({ message: "Failed to login" });
