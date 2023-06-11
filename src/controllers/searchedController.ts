@@ -12,7 +12,7 @@ export const searchedByUser = async (req: Request, res: Response) => {
     // Create a new user object with the generated ID
     const newPlace = {
       id,
-      place,
+      place
     };
 
     // Store the user data in Firebase Firestore
