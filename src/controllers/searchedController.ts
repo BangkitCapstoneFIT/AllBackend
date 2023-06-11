@@ -21,6 +21,7 @@ export const searchedByUser = async (req: Request, res: Response) => {
     // Return a response indicating success
     res.json({ message: "Data posted to Firestore successfully" });
   } catch (error) {
+    console.log(error);
     // Return a response indicating failure
     res.status(500).json({ message: "Failed to post data to Firestore" });
   }
