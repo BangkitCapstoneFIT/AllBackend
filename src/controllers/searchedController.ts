@@ -1,18 +1,22 @@
 import { db } from "../config/firebase";
 import { Request, Response } from "express";
-import * as admin from "firebase-admin";
+import { nanoid } from "nanoid";
 
 export const searchedByUser = async (req: Request, res: Response) => {
   try {
     // Extract the required data from the request body
     const { place } = req.body;
 
-    // Post data to Firestore
-    try {
-      await db.collection("databaseSearchedByUser").add({ place });
-    } catch (error) {
-      console.error("Error adding document: ", error);
-    }
+    const id = nanoid();
+
+    // Create a new user object with the generated ID
+    const newPlace = {
+      id,
+      place,
+    };
+
+    // Store the user data in Firebase Firestore
+    await db.collection("databaseSearchedByUser").doc(id).set(newPlace);
 
     // Return a response indicating success
     res.json({ message: "Data posted to Firestore successfully" });
