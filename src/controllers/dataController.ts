@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import fs from "fs";
 import { exec } from "child_process";
 import path from "path";
-import {db} from "../config/firebase"
+import {db} from "../config/firebase";
 
 export const getData = async (req: Request, res: Response) => {
   const limit = parseInt(req.query.limit as string) || 10; // default limit is 10
