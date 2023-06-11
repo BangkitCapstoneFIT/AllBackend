@@ -9,7 +9,7 @@ export const searchedByUser = async (req: Request, res: Response) => {
 
     // Post data to Firestore
     try {
-      await db.collection("searchedPlaces").add({ place });
+      await db.collection("databaseSearchedByUser").add({ place });
     } catch (error) {
       console.error("Error adding document: ", error);
     }
