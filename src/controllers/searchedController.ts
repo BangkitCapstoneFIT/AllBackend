@@ -22,7 +22,9 @@ export const searchedByUser = async (req: Request, res: Response) => {
     };
 
     // Reference the parent collection document
+
     const userRef = db.collection("databaseUser").doc(id);
+
 
     // Create the subcollection reference within the parent document
     const subcollectionRef = userRef.collection("databaseSearchedByUser");
@@ -37,4 +39,6 @@ export const searchedByUser = async (req: Request, res: Response) => {
     // Return a response indicating failure
     res.status(500).json({ message: "Failed to register place" });
   }
+
 };
+
