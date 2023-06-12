@@ -37,6 +37,12 @@ export const registerUser = async (req: Request, res: Response) => {
         .json({ message: "Password should be at least 6 characters long" });
     }
 
+    // Check if the email is already registered
+    const existingUser = await db.collection("databaseUser").where("email", "==", email).limit(1).get();
+    if (!existingUser.empty) {
+      return res.status(400).json({ message: "Email is already registered" });
+    }
+
     // Generate a unique ID using nanoid
     const id = nanoid();
 
@@ -52,8 +58,21 @@ export const registerUser = async (req: Request, res: Response) => {
     // Store the user data in Firebase Firestore
     await db.collection("databaseUser").doc(id).set(newUser);
 
-    // Return a response indicating success
-    res.json({ message: "User registered successfully" });
+    let snapshot = await db
+      .collection("databaseUser")
+      .where("username", "==", username)
+      .limit(1)
+      .get();
+      const user = snapshot.docs[0].data();
+      res.json({
+            message: "Register successful",
+            user: {
+              id: user.id,
+              username: user.username,
+              password: user.password,
+              phoneNumber: user.phoneNumber,
+            },
+          });
   } catch (error) {
     console.log(error);
     // Return a response indicating failure
