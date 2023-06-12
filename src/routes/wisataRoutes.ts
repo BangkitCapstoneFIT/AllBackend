@@ -1,5 +1,5 @@
 import express from "express";
-import { getAllWisata } from "../controllers/getallwisataController";
+import { getAllWisata} from "../controllers/getallwisataController";
 
 const router = express.Router();
 
