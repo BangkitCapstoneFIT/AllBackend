@@ -37,6 +37,12 @@ export const registerUser = async (req: Request, res: Response) => {
         .json({ message: "Password should be at least 6 characters long" });
     }
 
+    // Check if the email is already registered
+    const existingUser = await db.collection("databaseUser").where("email", "==", email).limit(1).get();
+    if (!existingUser.empty) {
+      return res.status(400).json({ message: "Email is already registered" });
+    }
+
     // Generate a unique ID using nanoid
     const id = nanoid();
 
