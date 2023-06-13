@@ -70,23 +70,40 @@ export const searchedByUser = async (req: Request, res: Response) => {
   }
 };
 
-export const getPlaceDescription = async (req: Request, res: Response): Promise<void> => {
+interface EditorialSummary {
+  language: string;
+  overview: string;
+}
+
+interface Result {
+  editorial_summary: EditorialSummary;
+}
+
+interface PlaceDetailsResponse {
+  html_attributions: string[];
+  result: Result;
+  status: string;
+}
+
+export const getEditorialSummary = async (req: Request, res: Response) => {
   try {
-    const { place } = req.query;
+    const { placeId } = req.query;
     const apiKey = process.env.API_KEY;
 
-    const response = await axios.get(
-      `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(
-        place as string
-      )}&key=${apiKey}`
+    const response = await axios.get<PlaceDetailsResponse>(
+      `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${apiKey}&fields=editorial_summary`
     );
 
-    const description = response.data.results[0].formatted_address;
+    console.log(response.data);
 
-    res.json({ description });
+    const { editorial_summary:editorialSummary  } = response.data.result;
+
+    res.json({ editorialSummary });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Failed to fetch place description" });
+    res.status(500).json({ message: "Failed to fetch editorial summary" });
   }
 };
+
+
 
