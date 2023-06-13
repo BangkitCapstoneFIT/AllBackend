@@ -4,8 +4,6 @@ import { db } from "../config/firebase";
 import axios from 'axios';
 import jwt from "jsonwebtoken";
 
-
-
 interface Place {
   id: string;
   place: string;
@@ -69,6 +67,26 @@ export const searchedByUser = async (req: Request, res: Response) => {
     console.log(error);
     // Return a response indicating failure
     res.status(500).json({ message: "Failed to register place" });
+  }
+};
+
+export const getPlaceDescription = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { place } = req.query;
+    const apiKey = process.env.API_KEY;
+
+    const response = await axios.get(
+      `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(
+        place as string
+      )}&key=${apiKey}`
+    );
+
+    const description = response.data.results[0].formatted_address;
+
+    res.json({ description });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Failed to fetch place description" });
   }
 };
 
