@@ -12,11 +12,11 @@ export const loginUser = async (req: Request, res: Response) => {
 
     // Check if all required fields are present
     if (!usernameOrEmail) {
-      return res.status(400).json({ message: "Username or email is required" });
+      return res.status(400).json({ success: false, message: "Username or email is required", userLoggedIn: [] });
     }
 
     if (!password) {
-      return res.status(400).json({ message: "Password is required" });
+      return res.status(400).json({ success: false, message: "Password is required", userLoggedIn: [] });
     }
 
     // Find a user with the provided username or email
@@ -35,7 +35,7 @@ export const loginUser = async (req: Request, res: Response) => {
         .get();
 
       if (snapshotByEmail.empty) {
-        return res.status(400).json({ message: "Invalid credentials" });
+        return res.status(400).json({ success: false, message: "Invalid credentials", userLoggedIn: [] });
       }
 
       // Use the user found by email
@@ -47,7 +47,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
     // Check if the provided password matches the user's password
     if (user.password !== password) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({ success: false, message: "Invalid credentials", userLoggedIn: [] });
     }
 
     // Generate a JWT token with the user ID as the payload
@@ -55,15 +55,16 @@ export const loginUser = async (req: Request, res: Response) => {
 
     // Return a response with the JWT token and user data
     res.json({
+      success: true, 
       message: "Login successful",
-      user: {
+      userLoggedIn: [{
         id: user.id,
         username: user.username,
         token: token,
-      },
+      }],
     });
   } catch (error) {
     // Return a response indicating failure
-    res.status(500).json({ message: "Failed to login" });
+    res.status(500).json({ success: false, message: "Failed to login", userLoggedIn: [] });
   }
 };
