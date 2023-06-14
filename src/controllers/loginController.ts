@@ -60,6 +60,10 @@ export const loginUser = async (req: Request, res: Response) => {
       userLoggedIn: [{
         id: user.id,
         username: user.username,
+        password: user.password,
+        phoneNumber: user.phoneNumber,
+        fullname: user.fullname,
+        profileImage: user.profileImage,
         token: token,
       }],
     });

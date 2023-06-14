@@ -5,7 +5,7 @@ import { nanoid } from "nanoid";
 export const registerUser = async (req: Request, res: Response) => {
   try {
     // Extract the required data from the request body
-    const { email, username, password, phoneNumber } = req.body;
+    const { email, username, password, phoneNumber, fullname, profileImage } = req.body;
 
     // Check if all required fields are present
     if (!email) {
@@ -22,6 +22,10 @@ export const registerUser = async (req: Request, res: Response) => {
 
     if (!phoneNumber) {
       return res.status(400).json({ success: false, message: "Phone number is required", userRegistered: [] });
+    }
+
+    if (!fullname) {
+      return res.status(400).json({ success: false, message: "Full name is required", userRegistered: [] });
     }
 
     // Validate email format using a regular expression
@@ -53,6 +57,8 @@ export const registerUser = async (req: Request, res: Response) => {
       username,
       password,
       phoneNumber,
+      fullname,
+      profileImage,
     };
 
     // Store the user data in Firebase Firestore
@@ -72,6 +78,8 @@ export const registerUser = async (req: Request, res: Response) => {
               username: user.username,
               password: user.password,
               phoneNumber: user.phoneNumber,
+              fullname: user.fullname,
+              profileImage: user.profileImage
             }],
           });
   } catch (error) {
