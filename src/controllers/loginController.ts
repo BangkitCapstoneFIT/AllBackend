@@ -21,7 +21,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
     // Find a user with the provided username or email
     let snapshot = await db
-      .collection("databaseUser")
+      .collection("databaseUsers")
       .where("username", "==", usernameOrEmail)
       .limit(1)
       .get();
@@ -29,7 +29,7 @@ export const loginUser = async (req: Request, res: Response) => {
     // If no user is found with the username, try finding by email
     if (snapshot.empty) {
       const snapshotByEmail = await admin.firestore()
-        .collection("databaseUser")
+        .collection("databaseUsers")
         .where("email", "==", usernameOrEmail)
         .limit(1)
         .get();
@@ -59,6 +59,7 @@ export const loginUser = async (req: Request, res: Response) => {
       message: "Login successful",
       userLoggedIn: [{
         id: user.id,
+        email: user.email,
         username: user.username,
         password: user.password,
         phoneNumber: user.phoneNumber,

@@ -42,7 +42,7 @@ export const registerUser = async (req: Request, res: Response) => {
     }
 
     // Check if the email is already registered
-    const existingUser = await db.collection("databaseUser").where("email", "==", email).limit(1).get();
+    const existingUser = await db.collection("databaseUsers").where("email", "==", email).limit(1).get();
     if (!existingUser.empty) {
       return res.status(400).json({ success: false, message: "Email is already registered", userRegistered: [] });
     }
@@ -62,10 +62,10 @@ export const registerUser = async (req: Request, res: Response) => {
     };
 
     // Store the user data in Firebase Firestore
-    await db.collection("databaseUser").doc(id).set(newUser);
+    await db.collection("databaseUsers").doc(id).set(newUser);
 
     let snapshot = await db
-      .collection("databaseUser")
+      .collection("databaseUsers")
       .where("username", "==", username)
       .limit(1)
       .get();
@@ -75,6 +75,7 @@ export const registerUser = async (req: Request, res: Response) => {
             message: "Register successful",
             userRegistered: [{
               id: user.id,
+              email: user.email,
               username: user.username,
               password: user.password,
               phoneNumber: user.phoneNumber,
