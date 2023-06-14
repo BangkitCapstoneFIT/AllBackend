@@ -9,42 +9,41 @@ export const registerUser = async (req: Request, res: Response) => {
 
     // Check if all required fields are present
     if (!email) {
-      return res.status(400).json({ success: false, message: "Email is required", userRegistered: [] });
+      return res.json({ success: false, message: "Email is required", userRegistered: [] });
     }
 
     if (!username) {
-      return res.status(400).json({ success: false, message: "Username is required", userRegistered: [] });
+      return res.json({ success: false, message: "Username is required", userRegistered: [] });
     }
 
     if (!password) {
-      return res.status(400).json({ success: false, message: "Password is required", userRegistered: [] });
+      return res.json({ success: false, message: "Password is required", userRegistered: [] });
     }
 
     if (!phoneNumber) {
-      return res.status(400).json({ success: false, message: "Phone number is required", userRegistered: [] });
+      return res.json({ success: false, message: "Phone Number is required", userRegistered: [] });
     }
 
     if (!fullname) {
-      return res.status(400).json({ success: false, message: "Full name is required", userRegistered: [] });
+      return res.json({ success: false, message: "Full Name is required", userRegistered: [] });
     }
 
     // Validate email format using a regular expression
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return res.status(400).json({ success: false, message: "Invalid email format", userRegistered: [] });
+      return res.json({ success: false, message: "Invalid email format", userRegistered: [] });
     }
 
     // Validate password length
     if (password.length < 6) {
       return res
-        .status(400)
         .json({ success: false, message: "Password should be at least 6 characters long", userRegistered: [] });
     }
 
     // Check if the email is already registered
     const existingUser = await db.collection("databaseUsers").where("email", "==", email).limit(1).get();
     if (!existingUser.empty) {
-      return res.status(400).json({ success: false, message: "Email is already registered", userRegistered: [] });
+      return res.json({ success: false, message: "Email is already registered", userRegistered: [] });
     }
 
     // Generate a unique ID using nanoid

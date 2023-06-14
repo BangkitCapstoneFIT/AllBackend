@@ -12,11 +12,11 @@ export const loginUser = async (req: Request, res: Response) => {
 
     // Check if all required fields are present
     if (!usernameOrEmail) {
-      return res.status(400).json({ success: false, message: "Username or email is required", userLoggedIn: [] });
+      return res.json({ success: false, message: "Username or email is required", userLoggedIn: [] });
     }
 
     if (!password) {
-      return res.status(400).json({ success: false, message: "Password is required", userLoggedIn: [] });
+      return res.json({ success: false, message: "Password is required", userLoggedIn: [] });
     }
 
     // Find a user with the provided username or email
@@ -35,7 +35,7 @@ export const loginUser = async (req: Request, res: Response) => {
         .get();
 
       if (snapshotByEmail.empty) {
-        return res.status(400).json({ success: false, message: "Invalid credentials", userLoggedIn: [] });
+        return res.json({ success: false, message: "Invalid credentials", userLoggedIn: [] });
       }
 
       // Use the user found by email
@@ -47,7 +47,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
     // Check if the provided password matches the user's password
     if (user.password !== password) {
-      return res.status(400).json({ success: false, message: "Invalid credentials", userLoggedIn: [] });
+      return res.json({ success: false, message: "Invalid credentials", userLoggedIn: [] });
     }
 
     // Generate a JWT token with the user ID as the payload
