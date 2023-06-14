@@ -53,10 +53,10 @@ export const searchedByUser = async (req: Request, res: Response) => {
     };
 
     // Reference the parent collection document
-    const userRef = db.collection("databaseUser").doc(decodedToken.userId);
+    const userRef = db.collection("databaseUsers").doc(decodedToken.userId);
 
     // Create the subcollection reference within the parent document
-    const subcollectionRef = userRef.collection("databaseSearchedByUser");
+    const subcollectionRef = userRef.collection("databaseSearched");
 
     // Store the place data in the subcollection
     await subcollectionRef.doc(id).set(newPlace);
