@@ -17,9 +17,20 @@ ref_path = "databaseDataRaw"  # Replace with the desired reference path
 with open("./dataraw.json", encoding="utf8") as json_file:  # Replace with the actual path to your JSON file
     data = json.load(json_file)
 
-# Upload each data entry to Firestore
+# Upload each data entry to Firestore if it doesn't already exist
 for entry in data:
-    doc_ref = db.collection(ref_path).document()
-    doc_ref.set(entry)
+    unique_id = entry.get("unique_id")  # Replace "unique_id" with the actual unique identifier key in your data
 
-print("Data uploaded successfully.")
+    # Query Firestore to check if the entry already exists
+    query = db.collection(ref_path).where("unique_id", "==", unique_id)  # Replace "unique_id" with the actual field name in Firestore
+    existing_entries = query.get()
+
+    # Upload the entry only if it doesn't already exist
+    if len(existing_entries) == 0:
+        doc_ref = db.collection(ref_path).document()
+        doc_ref.set(entry)
+        print(f"Uploaded entry with unique_id: {unique_id}")
+    else:
+        print(f"Skipping entry with unique_id {unique_id} as it already exists in the database.")
+
+print("Data upload completed.")
