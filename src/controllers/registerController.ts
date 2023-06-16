@@ -98,14 +98,30 @@ export const updateUser = async (req: Request, res: Response) => {
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET) as { userId: string };
     const { userId } = decodedToken;
 
-    const { fullname, phoneNumber } = req.body;
+    const { email, username, password, profileImage, fullname, phoneNumber } = req.body;
 
     // Check if fullname or phoneNumber is provided
     if (!fullname && !phoneNumber) {
       return res.json({ success: false, message: "Please provide fullname or phoneNumber", userUpdated: [] });
     }
 
-    const updatedUserData: Partial<{ fullname: string; phoneNumber: string }> = {};
+    const updatedUserData: Partial<{ username: string; email: string; password: string; profileImage: string; fullname: string; phoneNumber: string }> = {};
+    
+    if (username) {
+      updatedUserData.username = username;
+    }
+
+    if (email) {
+      updatedUserData.email = email;
+    }
+
+    if (password) {
+      updatedUserData.password = password;
+    }
+
+    if (profileImage) {
+      updatedUserData.profileImage = profileImage;
+    }
 
     if (fullname) {
       updatedUserData.fullname = fullname;
@@ -129,6 +145,10 @@ export const updateUser = async (req: Request, res: Response) => {
       success: true,
       message: "User updated successfully",
       userUpdated: [{
+        email: updatedUser.email,
+        username: updatedUser.username,
+        password: updatedUser.password,
+        profileImage: updatedUser.profileImage,
         phoneNumber: updatedUser.phoneNumber,
         fullname: updatedUser.fullname
       }],
