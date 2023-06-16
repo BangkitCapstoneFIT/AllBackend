@@ -129,7 +129,6 @@ export const updateUser = async (req: Request, res: Response) => {
       success: true,
       message: "User updated successfully",
       userUpdated: [{
-        id: updatedUser.id,
         phoneNumber: updatedUser.phoneNumber,
         fullname: updatedUser.fullname
       }],
