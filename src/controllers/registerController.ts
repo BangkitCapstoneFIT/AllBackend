@@ -1,6 +1,7 @@
 import { db } from "../config/firebase";
 import { Request, Response } from "express";
 import { nanoid } from "nanoid";
+import jwt from "jsonwebtoken";
 
 export const registerUser = async (req: Request, res: Response) => {
   try {
@@ -88,3 +89,54 @@ export const registerUser = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, message: "Failed to register user", userRegistered: [] });
   }
 };
+
+export const updateUser = async (req: Request, res: Response) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+
+    // Verify and decode the token to get the user ID
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET) as { userId: string };
+    const { userId } = decodedToken;
+
+    const { fullname, phoneNumber } = req.body;
+
+    // Check if fullname or phoneNumber is provided
+    if (!fullname && !phoneNumber) {
+      return res.json({ success: false, message: "Please provide fullname or phoneNumber", userUpdated: [] });
+    }
+
+    const updatedUserData: Partial<{ fullname: string; phoneNumber: string }> = {};
+
+    if (fullname) {
+      updatedUserData.fullname = fullname;
+    }
+
+    if (phoneNumber) {
+      updatedUserData.phoneNumber = phoneNumber;
+    }
+
+    const userRef = await db.collection("databaseUsers").doc(userId).get();
+    if (!userRef.exists) {
+      return res.json({ success: false, message: "User not found", userUpdated: [] });
+    }
+
+    await db.collection("databaseUsers").doc(userId).update(updatedUserData);
+
+    const updatedUserRef = await db.collection("databaseUsers").doc(userId).get();
+    const updatedUser = updatedUserRef.data();
+
+    res.json({
+      success: true,
+      message: "User updated successfully",
+      userUpdated: [{
+        id: updatedUser.id,
+        phoneNumber: updatedUser.phoneNumber,
+        fullname: updatedUser.fullname
+      }],
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Failed to update user", userUpdated: [] });
+  }
+};
+
