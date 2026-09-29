@@ -1,1 +1,7 @@
 node_modules
+
+# secrets: never commit
+.env
+.env.*
+src/config/serviceAccount.json
+firebase.json
